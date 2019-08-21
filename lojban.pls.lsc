@@ -1,0 +1,86 @@
+log     = console.log.bind console
+ph_lu =
+  a: "a"
+  e: "ɛ"
+  i: "i"
+  o: "o"
+  u: "u"
+  y: "ə"
+  ai: "aj"
+  ei: "ɛj"
+  oi: "oj"
+  au: "aw"
+  ia: "ja"
+  ie: "jɛ"
+  ii: "ji"
+  io: "jo"
+  iu: "ju"
+  ua: "wa"
+  ue: "wɛ"
+  ui: "wi"
+  uo: "wo"
+  uu: "wu"
+  iy: "jə"
+  uy: "wə"
+  c: "ʃ"
+  j: "ʒ"
+  s: "s"
+  z: "z"
+  f: "f"
+  v: "v"
+  x: "x"
+  "'": "h"
+  dj: "dʒ"
+  tc: "tʃ"
+  dz: "ʣ"
+  ts: "ʦ"
+  r: "ɹ"
+  n: "n"
+  m: "m"
+  l: "l"
+  b: "b"
+  d: "d"
+  g: "g"
+  k: "k"
+  p: "p"
+  t: "t"
+ph = (w) -> 
+  o = ''
+  for c, i in [...w]
+    if (ph_lu[[...w][i-1] + c])
+      o += ph_lu[[...w][i-1] + c] 
+    else if (ph_lu[c + [...w][i+1]])
+      continue
+    else
+      o += ph_lu[c]
+  return o
+
+zlm_start = 0xED80
+zlm_lu = "ptkflscmx.' 1234bdgvrzjn!-,~    aeiouy          AEIOUY"
+zlm = (w) ->
+  o = ''
+  for c in [...w]
+    o += String.fromCodePoint(zlm_start+zlm_lu.indexOf(c))
+  return o
+
+require! './gismu.js'
+
+log '''
+<?xml version="1.0" encoding="UTF-8"?>
+<lexicon version="1.0" 
+   xmlns="http://www.w3.org/2005/01/pronunciation-lexicon"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xsi:schemaLocation="http://www.w3.org/2005/01/pronunciation-lexicon 
+     http://www.w3.org/TR/2007/CR-pronunciation-lexicon-20071212/pls.xsd"
+   alphabet="ipa" xml:lang="en-US">
+'''
+for g in gismu
+  log "  <lexeme>"
+  log "    <grapheme>#{g}</grapheme>"
+  # log "    <grapheme>#{zlm(g)}</grapheme>"
+  log "    <phoneme>#{ph(g)}</phoneme>"
+  log "  </lexeme>"
+
+log '''
+</lexicon>
+'''
